@@ -12,12 +12,12 @@ const Moviecard = ({ allMovies }: any) => {
         router.push(`/singleDetail/${id}`);
     }
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 cursor-pointer">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
             {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 allMovies?.results?.map((movie: any, index: number) => (
-                    <div onClick={() => redirectToDetails(movie?.id)} key={index} className="bg-gray-800 text-white rounded-md shadow-md overflow-hidden">
-                        <div className="relative w-full h-[300px]">
+                    <div onClick={() => redirectToDetails(movie?.id)} key={index} className="bg-gray-800 text-white rounded-md shadow-md overflow-hidden cursor-pointer">
+                        <div className="relative w-full h-[250px]">
                             <Image
                                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                                 alt={movie.title}

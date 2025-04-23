@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -5,18 +6,21 @@ import CastDetails from '@/app/components/CastDetails';
 import Loading from '@/app/loading';
 import { StarIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
-const SingleDetail = ({ params }: { params: { id: any } }) => {
+const SingleDetail = () => {
+   const params = useParams();
+      const { id } = params;
   const api_key = process.env.NEXT_PUBLIC_API_KEY;
-  const api_url = process.env.NEXT_PUBLIC_API_URL;  
+  const api_url = process.env.NEXT_PUBLIC_API_URL;
   const [details, setDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchMovieDetails = async () => {
     try {
-      const res = await fetch(`${api_url}/movie/${params.id}?api_key=${api_key}`);
+      const res = await fetch(`${api_url}/movie/${id}?api_key=${api_key}`);
       if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
       const data = await res.json();
       setDetails(data);
@@ -30,9 +34,8 @@ const SingleDetail = ({ params }: { params: { id: any } }) => {
   };
 
   useEffect(() => {
-    if (params?.id) fetchMovieDetails();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params?.id]);
+    if (id) fetchMovieDetails();
+  }, [id]);
 
   if (isLoading) return <p className='text-center'><Loading></Loading></p>;
   if (error) return <p className='text-center text-red-500'>{error}</p>;
@@ -97,7 +100,7 @@ const SingleDetail = ({ params }: { params: { id: any } }) => {
       </div>
 
       <div>
-        <CastDetails movieId={params?.id}></CastDetails>
+        <CastDetails movieId={id}></CastDetails>
       </div>
 
     </>

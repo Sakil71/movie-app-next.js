@@ -66,8 +66,9 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex justify-between mb-5">
-        <div>
+      <div className="flex justify-between items-center my-5">
+        <div className="flex gap-2 items-center">
+          <div className="bg-blue-800 h-6 w-[3px]"></div>
           <p className="font-bold">
             {
               search ? 'Seach results for: ' + search : category.toUpperCase()
@@ -89,7 +90,7 @@ export default function Home() {
           </div>
         </div>
         <div>
-          <select onChange={(e) => setCategory(e.target.value)} name="" id="" className="border rounded-md px-4 py-1">
+          <select onChange={(e) => setCategory(e.target.value)} name="" id="" className="border rounded-sm px-4 py-1">
             <option className="text-black" value="popular">Popular</option>
             <option className="text-black" value="top_rated">Top rated</option>
             <option className="text-black" value="upcoming">Upcoming</option>
@@ -98,21 +99,38 @@ export default function Home() {
       </div>
 
 
-      {
-        loading ? <SkeletonLoading></SkeletonLoading>
-          :
-          <div>
-            {
-              !allMovies?.results?.length
-                ?
-                <div className="flex justify-center items-center text-red-500">
-                  <p>No movie found</p>
-                </div>
-                :
-                <Moviecard allMovies={allMovies}></Moviecard>
-            }
-          </div>
-      }
+      <div>
+        {
+          loading ? <SkeletonLoading></SkeletonLoading>
+            :
+            <div>
+              {
+                !allMovies?.results?.length
+                  ?
+                  <div className="flex justify-center items-center text-red-500">
+                    <p>No movie found</p>
+                  </div>
+                  :
+                  <Moviecard allMovies={allMovies}></Moviecard>
+              }
+            </div>
+        }
+      </div>
+
+      <div className="flex justify-center mt-10">
+        <div className="flex mb-4 items-center">
+          <button onClick={() => setPage(prevPage => Math.max(prevPage - 1, 1))} className="cursor-pointer bg-gray-300 text-gray-700 px-4 py-1 rounded-s-sm disabled:opacity-50 disabled:cursor-default" disabled={page === 1}>
+            <ChevronLeftIcon className="w-8 h-6" />
+          </button>
+
+          <p className="bg-gray-200 text-gray-800 px-4 py-1 font-medium">{page}/{totalPage}</p>
+
+
+          <button onClick={() => setPage(previosPage => Math.min(previosPage + 1, totalPage))} className="cursor-pointer bg-gray-300 text-gray-700 px-4 py-1 rounded-e-sm disabled:opacity-50 disabled:cursor-default" disabled={page === totalPage || totalPage === 0}>
+            <ChevronRightIcon className="w-8 h-6" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

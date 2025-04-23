@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import fallbackImage from '@/public/user-not-found.jpg';
 
-const CastDetails = ({ movieId }: { movieId: string }) => {
+const CastDetails = ({ movieId }: any) => {
   const api_key = process.env.NEXT_PUBLIC_API_KEY;
   const api_url = process.env.NEXT_PUBLIC_API_URL;
     const [credits, setCredits] = useState<any>(null);
@@ -16,8 +16,6 @@ const CastDetails = ({ movieId }: { movieId: string }) => {
             const res = await fetch(`${api_url}/movie/${movieId}/credits?api_key=${api_key}&language=en-US`);
             const data = await res.json();
             setCredits(data);
-            console.log(data);
-
         }
         catch (error) {
             console.log(error);
@@ -26,7 +24,7 @@ const CastDetails = ({ movieId }: { movieId: string }) => {
 
 
     useEffect(() => {
-        if (movieId) fetchCredits();
+        fetchCredits();
     }, [movieId])
 
 
@@ -44,9 +42,8 @@ const CastDetails = ({ movieId }: { movieId: string }) => {
                             <Image
                                 src={actor.profile_path ? `https://image.tmdb.org/t/p/w500${actor.profile_path}` : fallbackImage}
                                 alt={actor.name}
-                                layout="fill"
-                                objectFit="cover"
-                                className="rounded-t-lg"
+                                fill
+                                className="rounded-t-lg object-cover"
                             />
                         </div>
                         <div className="p-4">
