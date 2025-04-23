@@ -28,13 +28,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Header></Header>
-        <div className="md:container mx-auto md:px-10 mb-20">
+        <div className="md:container mx-auto px-2 md:px-10 mb-20">
           <div className="flex gap-4">
             <div className="w-full">
               {children}
             </div>
-            <div className="w-[20%]">
-              <SideNav></SideNav>
+            <div className="hidden md:block w-[20%]">
+              <SideNav setMenuOpen={undefined}></SideNav>
             </div>
           </div>
         </div>

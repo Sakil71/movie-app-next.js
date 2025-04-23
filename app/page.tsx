@@ -99,7 +99,7 @@ export default function Home() {
               Filter
             </button>
           </div>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 z-10">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] md:w-1/2 z-10">
             {
               isModalOpen
               &&

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
+import SideNav from './SideNav';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,19 +22,29 @@ const Header = () => {
         {/* Top Row with Logo and Toggle */}
         <div className='flex justify-between w-full md:w-auto items-center'>
           <Link href={'/'}><h1 className='text-2xl font-bold text-white'>Movie</h1></Link>
-          <div className='md:hidden'>
-            <button onClick={() => setMenuOpen(!menuOpen)} className='text-white cursor-pointer'>
-              <Bars3Icon className='h-6 w-6' />
+          <div onClick={() => setMenuOpen(!menuOpen)} className='md:hidden'>
+            <button className='text-white cursor-pointer'>
+              {
+                menuOpen ?
+                  <span className='bg-red-600 px-2'>X</span>
+                  :
+                  <Bars3Icon className='h-6 w-6' />
+              }
             </button>
           </div>
         </div>
 
         {/* Navigation (hidden on mobile unless toggled) */}
-        <div className={`${menuOpen ? 'flex' : 'hidden'} flex-col md:flex md:flex-row items-center gap-2 md:gap-4 text-white text-sm`}>
-          <Link href="/popular">Popular</Link>
-          <Link href="/toprated">Top Rated</Link>
-          <Link href="/upcomming">Upcoming</Link>
+        <div className="relative w-full" >
+          {
+            menuOpen && (
+              <div className="absolute left-0 top-full z-50 bg-gray-800 shadow-lg">
+                <SideNav setMenuOpen={setMenuOpen}/>
+              </div>
+            )
+          }
         </div>
+
 
         {/* Search */}
         <div className='flex'>

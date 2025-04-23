@@ -4,7 +4,7 @@
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-const SideNav = () => {
+const SideNav = ({ setMenuOpen }: any) => {
     const api_key = process.env.NEXT_PUBLIC_API_KEY;
     const url = process.env.NEXT_PUBLIC_API_URL;
     const [genres, setGenres] = useState<any[]>([]);
@@ -37,14 +37,17 @@ const SideNav = () => {
     }, []);
 
     return (
-        <div className='px-4 mt-20'>
+        <div className='px-4 mt-20 w-full pb-5'>
             <div className='mb-5'>
                 <h1 className='text-xl font-bold mb-4'>Genres</h1>
                 <ul className='space-y-2 flex flex-wrap gap-2'>
                     {
                         genres.map((gen: any) => (
                             <li key={gen.id}>
-                                <button onClick={() => handleGenreData(gen.id, gen.name)} className='bg-zinc-700 py-1 text-xs px-4 truncate cursor-pointer'>
+                                <button onClick={() => {
+                                    handleGenreData(gen.id, gen.name);
+                                    setMenuOpen(false)
+                                }} className='bg-zinc-700 py-1 text-xs px-4 truncate cursor-pointer'>
                                     {gen.name}
                                 </button>
                             </li>
@@ -59,7 +62,10 @@ const SideNav = () => {
                     {
                         years.slice(0, visibleYears).map((year: number) => (
                             <li key={year}>
-                                <button onClick={() => handleReleaseDateData(year)} className='bg-zinc-700 py-1 text-xs px-4 truncate cursor-pointer'>
+                                <button onClick={() => {
+                                    handleReleaseDateData(year);
+                                    setMenuOpen(false);
+                                }} className='bg-zinc-700 py-1 text-xs px-4 truncate cursor-pointer'>
                                     {year}
                                 </button>
                             </li>
