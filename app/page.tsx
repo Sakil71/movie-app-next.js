@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useEffect, useState } from "react";
 import Moviecard from "./components/Moviecard";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import SkeletonLoading from "./components/SkeletonLoading";
 import { useSearchParams } from "next/navigation";
+import FilterMovie from "./components/FilterMovie";
+import Pagination from "./components/Pagination";
 
 interface Movie {
   id: number;
@@ -31,26 +33,33 @@ export default function Home() {
   const searchParams = useSearchParams();
   const search = searchParams.get('search');
   const [category, setCategory] = useState('popular');
-
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedLanguages, setSelectedLanguages] = useState<any>('');
+  const [languageName, setLanguageName] = useState('');
 
   const api_key = process.env.NEXT_PUBLIC_API_KEY;
   const api_url = process.env.NEXT_PUBLIC_API_URL;
 
   const fetchAllMovies = async () => {
+    setLoading(true);
     try {
       let APIURL = '';
       if (search) {
-        APIURL = `${api_url}/search/movie?api_key=${api_key}&query=${search}&page=${page}`;
+        APIURL = `${api_url}/search/movie?api_key=${api_key}&query=${search}&page=${page}&language=${selectedLanguages}`;
+        setLanguageName('');
+      }
+      else if (selectedLanguages) {
+        APIURL = `${api_url}/discover/movie?api_key=${api_key}&with_original_language=${selectedLanguages}&page=${page}`;
       }
       else {
-        APIURL = `${api_url}/movie/${category}?api_key=${api_key}&language=en-US&page=${page}`;
+        APIURL = `${api_url}/movie/${category}?api_key=${api_key}&language=${selectedLanguages}-US&page=${page}`;
+        setLanguageName('');
       }
 
       const res = await fetch(APIURL);
       const data = await res.json();
       setAllMovies(data);
       setTotalPage(data?.total_pages);
-      setLoading(true);
     }
     catch (error) {
       console.error(error);
@@ -62,10 +71,10 @@ export default function Home() {
 
   useEffect(() => {
     fetchAllMovies();
-  }, [page, search, category])
+  }, [page, search, category, selectedLanguages])
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex justify-between items-center my-5">
         <div className="flex gap-2 items-center">
           <div className="bg-blue-800 h-6 w-[3px]"></div>
@@ -75,26 +84,35 @@ export default function Home() {
             }
           </p>
         </div>
-        <div className="flex justify-center">
-          <div className="flex mb-4 items-center">
-            <button onClick={() => setPage(prevPage => Math.max(prevPage - 1, 1))} className="cursor-pointer bg-gray-300 text-gray-700 px-4 py-1 rounded-s-sm disabled:opacity-50 disabled:cursor-default" disabled={page === 1}>
-              <ChevronLeftIcon className="w-8 h-6" />
-            </button>
 
-            <p className="bg-gray-200 text-gray-800 px-4 py-1 font-medium">{page}/{totalPage}</p>
+        <div>
+          <Pagination setPage={setPage} page={page} totalPage={totalPage}></Pagination>
+        </div>
 
-
-            <button onClick={() => setPage(previosPage => Math.min(previosPage + 1, totalPage))} className="cursor-pointer bg-gray-300 text-gray-700 px-4 py-1 rounded-e-sm disabled:opacity-50 disabled:cursor-default" disabled={page === totalPage || totalPage === 0}>
-              <ChevronRightIcon className="w-8 h-6" />
+        <div>
+          <div className="flex gap-2 items-center">
+            <p>{languageName}</p>
+            <button
+              onClick={() => setModalOpen(!isModalOpen)}
+              className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+            >
+              Filter
             </button>
           </div>
-        </div>
-        <div>
-          <select onChange={(e) => setCategory(e.target.value)} name="" id="" className="border rounded-sm px-4 py-1">
-            <option className="text-black" value="popular">Popular</option>
-            <option className="text-black" value="top_rated">Top rated</option>
-            <option className="text-black" value="upcoming">Upcoming</option>
-          </select>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 z-10">
+            {
+              isModalOpen
+              &&
+              <FilterMovie
+                setCategory={setCategory}
+                setModalOpen={setModalOpen}
+                setSelectedLanguages={setSelectedLanguages}
+                selectedLanguages={selectedLanguages}
+                category={category}
+                setLanguageName={setLanguageName}
+              ></FilterMovie>
+            }
+          </div>
         </div>
       </div>
 
@@ -118,18 +136,7 @@ export default function Home() {
       </div>
 
       <div className="flex justify-center mt-10">
-        <div className="flex mb-4 items-center">
-          <button onClick={() => setPage(prevPage => Math.max(prevPage - 1, 1))} className="cursor-pointer bg-gray-300 text-gray-700 px-4 py-1 rounded-s-sm disabled:opacity-50 disabled:cursor-default" disabled={page === 1}>
-            <ChevronLeftIcon className="w-8 h-6" />
-          </button>
-
-          <p className="bg-gray-200 text-gray-800 px-4 py-1 font-medium">{page}/{totalPage}</p>
-
-
-          <button onClick={() => setPage(previosPage => Math.min(previosPage + 1, totalPage))} className="cursor-pointer bg-gray-300 text-gray-700 px-4 py-1 rounded-e-sm disabled:opacity-50 disabled:cursor-default" disabled={page === totalPage || totalPage === 0}>
-            <ChevronRightIcon className="w-8 h-6" />
-          </button>
-        </div>
+        <Pagination setPage={setPage} page={page} totalPage={totalPage}></Pagination>
       </div>
     </div>
   );
